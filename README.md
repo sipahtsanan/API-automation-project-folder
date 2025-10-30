@@ -2,7 +2,7 @@
 
 ## 📘 Overview
 This project API testing using **Postman** and **Newman**.  
-It includes automated execution, JSON Schema validation, and HTML reporting,  
+It includes automated execution, JSON Schema validation, and HTML reporting.
 
 ---
 
