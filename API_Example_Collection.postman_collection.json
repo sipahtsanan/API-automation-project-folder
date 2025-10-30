@@ -1,0 +1,284 @@
+{
+	"info": {
+		"_postman_id": "09dec6e3-8c14-40e9-bf06-e883559268c6",
+		"name": "API_Example_Collection",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "15767180"
+	},
+	"item": [
+		{
+			"name": "Validate an object",
+			"item": [
+				{
+					"name": "TC001_Create an object success",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code returns 200\", () => {",
+									"  pm.response.to.have.status(200);",
+									"});",
+									"",
+									"",
+									"const schema = {",
+									"  \"title\": \"Generated schema for Root\",",
+									"  \"type\": \"object\",",
+									"  \"properties\": {",
+									"    \"id\": { \"type\": \"string\" },",
+									"    \"name\": { \"type\": \"string\" },",
+									"    \"createdAt\": { ",
+									"      \"type\": \"string\",",
+									"      \"pattern\": \"^\\\\d{4}-\\\\d{2}-\\\\d{2}T\\\\d{2}:\\\\d{2}:\\\\d{2}\\\\.\\\\d{3}(Z|[+\\\\-]\\\\d{2}:\\\\d{2})$\"",
+									"    },",
+									"    \"data\": {",
+									"      \"type\": \"object\",",
+									"      \"properties\": {",
+									"        \"year\": { \"type\": \"number\" },",
+									"        \"price\": { \"type\": \"number\" },",
+									"        \"CPU model\": { \"type\": \"string\" },",
+									"        \"Hard disk size\": { \"type\": \"string\" }",
+									"      },",
+									"      \"required\": [\"year\", \"price\", \"CPU model\", \"Hard disk size\"]",
+									"    }",
+									"  },",
+									"  \"required\": [\"id\", \"name\", \"createdAt\", \"data\"]",
+									"};",
+									"",
+									"pm.test(\"Response matches expected JSON schema\", function () {",
+									"  pm.response.to.have.jsonSchema(schema);",
+									"});",
+									"",
+									"const body = pm.response.json();",
+									"",
+									"pm.test(\"`data` fields exist and valid\", () => {",
+									"  pm.expect(body).to.have.property(\"data\");",
+									"  const d = body.data;",
+									"",
+									"  [\"year\",\"price\",\"CPU model\",\"Hard disk size\"].forEach(f => {",
+									"    pm.expect(d, `${f} should exist`).to.have.property(f);",
+									"    pm.expect(d[f], `${f} should not be null/undefined`).to.not.be.oneOf([null, undefined]);",
+									"  });",
+									"  ",
+									"});",
+									"",
+									"",
+									"pm.environment.set(\"item_id\", body.id); "
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "reqres-free-v1",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n   \"name\": \"Apple MacBook Pro 16\",\n   \"data\": {\n      \"year\": 2019,\n      \"price\": 1849.99,\n      \"CPU model\": \"Intel Core i9\",\n      \"Hard disk size\": \"1 TB\"\n   }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{rest_url}}/objects",
+							"host": [
+								"{{rest_url}}"
+							],
+							"path": [
+								"objects"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TC002_Get an object by Id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code returns 200\", () => {",
+									"  pm.response.to.have.status(200);",
+									"});",
+									"",
+									"const schema = {",
+									"  \"title\": \"Generated schema for Root\",",
+									"  \"type\": \"object\",",
+									"  \"properties\": {",
+									"    \"id\": { \"type\": \"string\" },",
+									"    \"name\": { \"type\": \"string\" },",
+									"    \"data\": {",
+									"      \"type\": \"object\",",
+									"      \"properties\": {",
+									"        \"year\": { \"type\": \"number\" },",
+									"        \"price\": { \"type\": \"number\" },",
+									"        \"CPU model\": { \"type\": \"string\" },",
+									"        \"Hard disk size\": { \"type\": \"string\" }",
+									"      },",
+									"      \"required\": [\"year\", \"price\", \"CPU model\", \"Hard disk size\"]",
+									"    }",
+									"  },",
+									"  \"required\": [\"id\", \"name\", \"data\"]",
+									"};",
+									"",
+									"pm.test(\"Response matches expected JSON schema\", function () {",
+									"  pm.response.to.have.jsonSchema(schema);",
+									"});",
+									"",
+									"const body = pm.response.json();",
+									"",
+									"pm.test(\"`data` fields exist and valid\", () => {",
+									"  pm.expect(body).to.have.property(\"data\");",
+									"  const d = body.data;",
+									"  [\"year\",\"price\",\"CPU model\",\"Hard disk size\"].forEach(f => {",
+									"    pm.expect(d, `${f} should exist`).to.have.property(f);",
+									"    pm.expect(d[f], `${f} should not be null/undefined`).to.not.be.oneOf([null, undefined]);",
+									"  });",
+									"  ",
+									"});",
+									"",
+									"pm.environment.set(\"invalid_item_id\", body.id); ",
+									"",
+									"",
+									"////////////////// Delete id /////////////",
+									"const itemId = body.id;",
+									"pm.test(\"Item ID exists\", () => {",
+									"    pm.expect(itemId, \"id should not be null\").to.not.be.oneOf([null, undefined]);",
+									"});",
+									"",
+									"pm.sendRequest({",
+									"    url: `https://api.restful-api.dev/objects/${itemId}`,",
+									"    method: 'DELETE'",
+									"}, (err, res) => {",
+									"    pm.test(\"After successful deletion, status code is 200\", () => {",
+									"        pm.expect(res).to.have.property('code', 200);",
+									"    });",
+									"",
+									"    const deleteResponse = res.json();",
+									"    pm.test(\"Response body contains correct deletion message\", () => {",
+									"        pm.expect(deleteResponse).to.have.property(\"message\");",
+									"        pm.expect(deleteResponse.message).to.eql(`Object with id = ${itemId} has been deleted.`);",
+									"    });",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "reqres-free-v1",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{rest_url}}/objects/{{item_id}}",
+							"host": [
+								"{{rest_url}}"
+							],
+							"path": [
+								"objects",
+								"{{item_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TC003_Get an invalid object by Id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code returns 404\", () => {",
+									"  pm.response.to.have.status(404);",
+									"});",
+									"",
+									"pm.test(\"Error message mentions invalid id and not found\", () => {",
+									"const response = pm.response.json();",
+									"const invalid_item_id = pm.environment.get(\"invalid_item_id\");",
+									"",
+									"pm.test(\"Response body contains correct error message\", () => {",
+									"    pm.expect(response).to.have.property(\"error\");",
+									"    pm.expect(response.error).to.include(invalid_item_id);",
+									"    pm.expect(response.error.toLowerCase()).to.include(\"not found\");",
+									"});",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "reqres-free-v1",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{rest_url}}/objects/{{invalid_item_id}}",
+							"host": [
+								"{{rest_url}}"
+							],
+							"path": [
+								"objects",
+								"{{invalid_item_id}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
