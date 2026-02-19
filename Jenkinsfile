@@ -1,9 +1,5 @@
 pipeline {
-    agent {
-        docker {
-            image 'postman/newman:latest'
-        }
-    }
+    agent any
 
     parameters {
         choice(
@@ -29,7 +25,7 @@ pipeline {
 
         stage('Archive Report') {
             steps {
-                archiveArtifacts artifacts: 'API_Test_Report.html', allowEmptyArchive: true
+                archiveArtifacts artifacts: 'API_Test_Report.html'
                 junit 'results.xml'
             }
         }
