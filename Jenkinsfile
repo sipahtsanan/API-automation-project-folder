@@ -10,15 +10,14 @@ pipeline {
     }
 
     stages {
-
         stage('Run API Test') {
             steps {
                 sh """
                 newman run API_Example_Collection.postman_collection.json \
-                  -e ${params.ENV_FILE} \
-                  -r cli,html,junit \
-                  --reporter-html-export API_Test_Report.html \
-                  --reporter-junit-export results.xml
+                    -e ${params.ENV_FILE} \
+                    -r cli,html,junit \
+                    --reporter-html-export API_Test_Report.html \
+                    --reporter-junit-export results.xml
                 """
             }
         }
