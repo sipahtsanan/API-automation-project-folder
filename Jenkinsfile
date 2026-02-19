@@ -1,5 +1,9 @@
 pipeline {
-    agent any
+    agent {
+        docker {
+            image 'postman/newman:latest'
+        }
+    }
 
     parameters {
         choice(
@@ -11,13 +15,10 @@ pipeline {
 
     stages {
 
-        stage('Run API Test with Newman') {
+        stage('Run API Test') {
             steps {
                 sh """
-                docker run --rm \
-                  -v \$PWD:/etc/newman \
-                  postman/newman:latest \
-                  run API_Example_Collection.postman_collection.json \
+                newman run API_Example_Collection.postman_collection.json \
                   -e ${params.ENV_FILE} \
                   -r cli,html,junit \
                   --reporter-html-export API_Test_Report.html \
