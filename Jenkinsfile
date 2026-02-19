@@ -11,12 +11,6 @@ pipeline {
 
     stages {
 
-        stage('Checkout') {
-            steps {
-                git 'https://github.com/sipahtsanan/API-automation-project-folder.git'
-            }
-        }
-
         stage('Run API Test with Newman') {
             steps {
                 sh """
